@@ -7,7 +7,7 @@ brush_size = 100
 prev_x, prev_y = None, None
 flag = cv2.GC_PR_FGD
 
-def render(img_cut, GC_mask_current):
+def render(img_cut, GC_mask_current, show_brush=True):
 
     bursh_color_list = [(0, 255, 0), (0, 0, 255), (0, 255, 0), (0, 0, 255)]
 
@@ -21,10 +21,11 @@ def render(img_cut, GC_mask_current):
     preview_img[np.where(GC_mask_current == cv2.GC_BGD)] = preview_img[np.where(GC_mask_current == cv2.GC_BGD)] * 0.3 + np.array(bursh_color_list[cv2.GC_BGD]) * 0.7
     preview_img[np.where(GC_mask_current == cv2.GC_PR_BGD)] = preview_img[np.where(GC_mask_current == cv2.GC_PR_BGD)] * 0.5 + np.array(bursh_color_list[cv2.GC_PR_BGD]) * 0.5
 
-    if (flag == 0) | (flag == 1):
-        preview_img[np.where(brush_mask == 255)] = preview_img[np.where(brush_mask == 255)] * 0.3 + np.array(bursh_color_list[flag]) * 0.7
-    else:
-        preview_img[np.where(brush_mask == 255)] = preview_img[np.where(brush_mask == 255)] * 0.5 + np.array(bursh_color_list[flag]) * 0.5
+    if show_brush:
+        if (flag == 0) | (flag == 1):
+            preview_img[np.where(brush_mask == 255)] = preview_img[np.where(brush_mask == 255)] * 0.3 + np.array(bursh_color_list[flag]) * 0.7
+        else:
+            preview_img[np.where(brush_mask == 255)] = preview_img[np.where(brush_mask == 255)] * 0.5 + np.array(bursh_color_list[flag]) * 0.5
 
     return preview_img
 
@@ -100,7 +101,9 @@ while(1):
         flag = 0
 
     elif k == 13:
+        masked_img = render(img_org, GC_mask, False)
         cv2.imwrite('output.png', img_cut)
+        cv2.imwrite('masked_img.png', masked_img)
         break
         
 
